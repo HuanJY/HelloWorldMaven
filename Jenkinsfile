@@ -38,7 +38,21 @@ pipeline {
                withMaven(maven : 'apache-maven-3.6.0'){
                         sh "mvn deploy"
                 }
-
+            }
+        }
+        stage('Tag') {
+            steps {
+                script {
+                    sh """
+                    git config user.name "Jenkins"
+                    git config user.email "jenkins@example.com"
+                    """
+                    def tagName = "v${BUILD_NUMBER}" 
+                    sh """
+                    git tag -a ${tagName} -m "Tag by Jenkins pipeline"
+                    git push origin ${tagName}
+                    """
+                }
             }
         }
     }
